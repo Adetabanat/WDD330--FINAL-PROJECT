@@ -1,5 +1,5 @@
 .site-header {
-  background-color: #002e5d;
+  background-color: #1a1a40;
   color: #ffffff;
   padding: 1rem 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -49,4 +49,15 @@
 
 .main-nav a:hover {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Footer */
+footer {
+  background-color: #1a1a40;
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
 }
