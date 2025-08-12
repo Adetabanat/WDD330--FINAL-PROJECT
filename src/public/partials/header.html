@@ -1,15 +1,28 @@
-<header class="site-header">
-  <div class="container">
-    <div class="branding">
-      <img src="/images/logo.png" alt="BYU-I Logo" class="logo">
-      <h1 class="site-title">BookHub</h1>
+<div class="header-inner">
+  <div class="header-left">
+    <!-- From index.html, logo is in public/images/ -->
+    <a href="./index.html"
+      ><img class="logo" src="./public/images/logo.png" alt="BookHub logo"
+    /></a>
+    <div class="brand">
+      <strong>BOOKHUB</strong>
     </div>
-    <nav class="main-nav">
-      <a href="/index.html">Home</a>
-      <a href="/browse.html">Browse Books</a>
-      <a href="/order.html">My Order</a>
-      <a href="/recommended.html">Recommended Books</a>
-      <a href="/contact.html">Contact</a>
-    </nav>
   </div>
-</header>
+
+  <nav class="nav" aria-label="Main navigation">
+    <a href="./index.html">Home</a>
+    <!-- Adjust relative path to book-details.html from index.html -->
+    <a href="./book_pages/book-details.html">Sample Book</a>
+    <a href="./index.html#categories">Categories</a>
+  </nav>
+
+  <form id="header-search" class="search-bar" role="search">
+    <input
+      id="header-search-input"
+      type="search"
+      placeholder="Search books..."
+      aria-label="Search books"
+    />
+    <button type="submit" class="btn">Search</button>
+  </form>
+</div>

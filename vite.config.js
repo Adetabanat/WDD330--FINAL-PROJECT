@@ -1,16 +1,19 @@
-// vite.config.js
-import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { defineConfig } from "vite";
+import path from "path";
 
 export default defineConfig({
-  root: 'src',
-  publicDir: 'public',
+  root: "./src", // Serve files from src/
   build: {
-    outDir: '../dist',
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.html')  // ✅ Correct path
-      },
+    outDir: "../dist", // Output folder
+    emptyOutDir: true,
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    port: 5173,
+    open: true,
   },
 });

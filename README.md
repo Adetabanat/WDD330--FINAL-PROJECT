@@ -25,5 +25,3 @@ This project demonstrates understanding of core frontend web development concept
 - 📋 View and manage your current order
 - 📱 Fully responsive design for desktop and mobile
 - 🧠 Clean code with separation of concerns
-
-

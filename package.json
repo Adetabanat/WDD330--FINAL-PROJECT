@@ -4,11 +4,40 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "start": "vite",
+    "start": "vite",
     "build": "vite build --emptyOutDir",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.mjs",
+    "format": "prettier --write ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "eslint": "^9.33.0",
+    "prettier": "^3.6.2",
     "vite": "^7.0.4"
-  }
+  },
+  "description": "A responsive and interactive book ordering web app built using **HTML**, **CSS**, and **vanilla JavaScript** — developed as a final project for **WDD 330: Web Frontend Development II** at BYU–Idaho.",
+  "main": "vite.config.js",
+  "dependencies": {
+    "esbuild": "^0.25.8",
+    "fdir": "^6.4.6",
+    "nanoid": "^3.3.11",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.3",
+    "postcss": "^8.5.6",
+    "rollup": "^4.46.2",
+    "source-map-js": "^1.2.1",
+    "tinyglobby": "^0.2.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adetabanat/WDD330--FINAL-PROJECT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adetabanat/WDD330--FINAL-PROJECT/issues"
+  },
+  "homepage": "https://github.com/Adetabanat/WDD330--FINAL-PROJECT#readme"
 }

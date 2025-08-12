@@ -1,20 +1,62 @@
-<!-- src/index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>BookHub</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <header></header> <!-- Loaded dynamically -->
-  
-  <main>
-    <h1>Welcome to BookHub</h1>
-  </main>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BOOKHUB</title>
+    <!-- CSS path relative to src/index.html -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <header id="main-header"></header>
 
-  <footer></footer> <!-- Loaded dynamically -->
+    <main class="container">
+      <section class="hero">
+        <div class="hero-left">
+          <h1>BOOKHUB</h1>
+          <p>
+            Discover, save, and order books. Powered by Google Books and
+            Quotable.
+          </p>
+        </div>
+        <div id="quote-area" class="hero-right"></div>
+      </section>
 
-  <script type="module" src="/js/main.js"></script>
-</body>
+      <section class="search-section">
+        <form id="search-form" class="search-inline" aria-label="Search books">
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Search title, author, or keyword"
+          />
+          <button type="submit" class="btn">Search</button>
+        </form>
+      </section>
+
+      <section class="categories">
+        <h2>Browse by category</h2>
+        <div id="category-list" class="category-grid"></div>
+      </section>
+
+      <section class="recommend">
+        <h2>Recommended</h2>
+        <div id="recommended-grid" class="book-grid"></div>
+      </section>
+
+      <section class="trending">
+        <h2>Trending</h2>
+        <div id="trending-grid" class="book-grid"></div>
+      </section>
+
+      <section class="favorites">
+        <h2>Your Favorites</h2>
+        <div id="favorites-grid" class="book-grid"></div>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+
+    <!-- JS path relative to src/index.html -->
+    <script type="module" src="./js/main.js"></script>
+  </body>
 </html>
