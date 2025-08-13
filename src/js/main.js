@@ -1,132 +1,180 @@
-import { loadHeaderFooter, qs, qsa } from "./utils.mjs";
 import {
-  searchBooks,
-  fetchQuote,
-  fetchCategoriesJson,
-} from "./api.mjs";
-import {
-  toggleFavorite,
-  addToCart,
-  getFavorites,
-} from "./storage.mjs";
+  loadHeaderFooter,
+  getLocalStorage,
+  setLocalStorage,
+  setupSearchHandler,
+} from "./utils.mjs";
+import { fetchRandomQuote, searchBooks } from "./api.mjs";
+import { fetchGutendexBooks } from "./api.mjs";
 
-async function renderCategories() {
-  try {
-    const categories = await fetchCategoriesJson("./public/data/categories.json");
-    const container = qs("#category-list");
-    container.innerHTML = categories
-      .map(
-        (cat) =>
-          `<div class="category-card" tabindex="0">${cat.name}</div>`
-      )
-      .join("");
-  } catch (e) {
-    console.error("Error loading categories:", e);
-  }
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadHeaderFooter();
+  setupSearchHandler();
+
+  // Update header counts
+  updateHeaderCounts();
+
+  // Render scrolling quote
+  const quote = await fetchRandomQuote();
+  const quoteContainer = document.getElementById("quote-container");
+  quoteContainer.innerHTML = `<span class="scrolling-quote">"${quote.content}" - ${quote.author}</span>`;
+
+  // Render book sections
+  await renderBooksSection("recommended-books", "bestsellers");
+  await renderBooksSection("trending-books", "technology");
+  await renderFavoritesSection("favorite-books");
+
+  // Render Gutendex Free eBooks
+  await renderGutendexSection("gutendex-books", "fiction");
+});
+
+// Update favorites count in header
+function updateHeaderCounts() {
+  const favoritesCountEl = document.querySelector(".favorites-count");
+  const cartCountEl = document.getElementById("cart-count");
+  if (favoritesCountEl)
+    favoritesCountEl.textContent = getLocalStorage("favorites").length;
+  if (cartCountEl) cartCountEl.textContent = getLocalStorage("cart").length;
 }
 
-async function renderBooks(containerSelector, query, maxResults = 8) {
-  const container = qs(containerSelector);
-  container.innerHTML = "<p>Loading...</p>";
-  try {
-    const books = await searchBooks(query, maxResults);
-    if (!books.length) {
-      container.innerHTML = "<p>No books found.</p>";
-      return;
-    }
-    container.innerHTML = books
-      .map((book) => {
-        const info = book.volumeInfo || {};
-        const thumb = info.imageLinks?.thumbnail?.replace(/^http:/, "https:") || "./public/images/default-cover.jpg";
-        return `
-          <div class="book-card" tabindex="0" data-id="${book.id}">
-            <a href="./book_pages/book-details.html?id=${book.id}">
-              <img src="${thumb}" alt="${info.title || "No title"}" />
-              <h3>${info.title || "No title"}</h3>
-            </a>
-            <button class="fav-btn btn" data-id="${book.id}">♥ Favorite</button>
-          </div>
-        `;
-      })
-      .join("");
-    // Attach favorite button listeners
-    qsa(".fav-btn", container).forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const bookId = btn.dataset.id;
-        // Find book object by id in rendered books
-        const book = books.find((b) => b.id === bookId);
-        if (!book) return;
-        const added = toggleFavorite({
-          id: book.id,
-          volumeInfo: book.volumeInfo,
+// Render books by query with Add to Favorites button
+async function renderBooksSection(containerId, query) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const books = await searchBooks(query, 8);
+  container.innerHTML = books
+    .map((book) => {
+      const bookId = book.id;
+      const title = book.volumeInfo.title || "No Title";
+      const authors = book.volumeInfo.authors
+        ? book.volumeInfo.authors.join(", ")
+        : "Unknown";
+      const thumbnail =
+        book.volumeInfo.imageLinks?.thumbnail ||
+        "https://via.placeholder.com/128x195";
+
+      return `
+        <div class="book-card">
+          <a href="/book_pages/book-details.html?id=${bookId}">
+            <img src="${thumbnail}" alt="${title}">
+            <h4>${title}</h4>
+            <p>${authors}</p>
+          </a>
+          <button class="add-favorite" 
+                  data-id="${bookId}" 
+                  data-title="${title}" 
+                  data-author="${authors}" 
+                  data-image="${thumbnail}">
+            ❤️ Add to Favorites
+          </button>
+        </div>
+      `;
+    })
+    .join("");
+
+  // Add click events for Add to Favorites buttons
+  container.querySelectorAll(".add-favorite").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // prevent link click
+      const favorites = getLocalStorage("favorites");
+      const id = btn.dataset.id;
+      if (!favorites.some((f) => f.id === id)) {
+        favorites.push({
+          id,
+          title: btn.dataset.title,
+          author: btn.dataset.author,
+          image: btn.dataset.image,
         });
-        btn.textContent = added ? "♥ Favorited" : "♥ Favorite";
-      });
+        setLocalStorage("favorites", favorites);
+        alert("Book added to favorites!");
+        updateHeaderCounts();
+        renderFavoritesSection("favorite-books"); // refresh favorites section
+      } else {
+        alert("Book already in favorites.");
+      }
     });
-  } catch (e) {
-    container.innerHTML = "<p>Failed to load books.</p>";
-    console.error(e);
-  }
+  });
 }
 
-async function renderFavorites() {
-  const favorites = getFavorites();
-  const container = qs("#favorites-grid");
-  if (!favorites.length) {
-    container.innerHTML = "<p>No favorites yet.</p>";
+// Render favorites from localStorage
+function renderFavoritesSection(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const favorites = getLocalStorage("favorites");
+  if (favorites.length === 0) {
+    container.innerHTML = "<p>No favorite books yet.</p>";
     return;
   }
+
   container.innerHTML = favorites
     .map((book) => {
-      const info = book.volumeInfo || {};
-      const thumb = info.imageLinks?.thumbnail?.replace(/^http:/, "https:") || "./public/images/default-cover.jpg";
+      const title = book.title || "No Title";
+      const author = book.author || "Unknown";
+      const thumbnail = book.image || "https://via.placeholder.com/128x195";
+
       return `
-        <div class="book-card" tabindex="0" data-id="${book.id}">
-          <a href="./book_pages/book-details.html?id=${book.id}">
-            <img src="${thumb}" alt="${info.title || "No title"}" />
-            <h3>${info.title || "No title"}</h3>
+        <div class="book-card">
+          <a href="/book-detail/book-details.html?id=${book.id}">
+            <img src="${thumbnail}" alt="${title}">
+            <h4>${title}</h4>
+            <p>${author}</p>
           </a>
-          <button class="fav-btn btn" data-id="${book.id}">♥ Favorited</button>
         </div>
       `;
     })
     .join("");
 }
 
-async function renderQuote() {
-  try {
-    const quote = await fetchQuote();
-    const area = qs("#quote-area");
-    if (quote) {
-      area.innerHTML = `<blockquote>"${quote.content}" — <strong>${quote.author}</strong></blockquote>`;
-    }
-  } catch (e) {
-    console.error("Failed to load quote:", e);
+// Render Gutendex books
+async function renderGutendexSection(containerId, query) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const books = await fetchGutendexBooks(query, 8);
+  console.log(books); 
+  if (!books || books.length === 0) {
+    container.innerHTML = "<p>No free eBooks found.</p>";
+    return;
   }
-}
 
-async function init() {
-  await loadHeaderFooter("./public/partials/");
+  container.innerHTML = books
+    .map(book => `
+      <div class="book-card">
+         <a href="/book_pages/book-details.html?id=${book.id}">
+          <img src="${book.image}" alt="${book.title}">
+          <h4>${book.title}</h4>
+          <p>${book.authors}</p>
+        </a>
+        <button class="add-favorite" 
+                data-id="${book.id}" 
+                data-title="${book.title}" 
+                data-author="${book.authors}" 
+                data-image="${book.image}">
+          ❤️ Add to Favorites
+        </button>
+      </div>
+    `)
+    .join("");
 
-  await renderQuote();
-  await renderCategories();
-
-  // Sample recommended and trending books
-  await renderBooks("#recommended-grid", "bestsellers");
-  await renderBooks("#trending-grid", "trending");
-
-  await renderFavorites();
-
-  // Search form handler
-  const searchForm = qs("#search-form");
-  searchForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const query = qs("#search-input").value.trim();
-    if (!query) return;
-    await renderBooks("#recommended-grid", query);
-    // Optionally clear trending/favorites or update UI accordingly
+  // Add Favorites functionality
+  container.querySelectorAll(".add-favorite").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const favorites = getLocalStorage("favorites");
+      const id = btn.dataset.id;
+      if (!favorites.some(f => f.id == id)) {
+        favorites.push({
+          id,
+          title: btn.dataset.title,
+          author: btn.dataset.author,
+          image: btn.dataset.image,
+        });
+        setLocalStorage("favorites", favorites);
+        alert("Book added to favorites!");
+      } else {
+        alert("Book already in favorites.");
+      }
+    });
   });
 }
-
-init();

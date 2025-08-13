@@ -1,75 +1,81 @@
-import { loadHeaderFooter } from "./utils.mjs";
-import { getBookById, fetchQuote } from "./api.mjs";
-import { addToCart, toggleFavorite } from "./storage.mjs";
-import { qs } from "./utils.mjs";
+import { loadHeaderFooter, getLocalStorage, setLocalStorage, setupSearchHandler } from "./utils.mjs";
+import { fetchBookById } from "./api.mjs";
+import { fetchGutendexBookById } from "./api.mjs";
 
-async function init() {
-  // Load header/footer partials (relative to book-details.html)
-  await loadHeaderFooter("../public/partials/");
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadHeaderFooter();
+  setupSearchHandler();
 
-  const params = new URLSearchParams(location.search);
-  const id = params.get("id");
-  const area = qs("#book-details");
+  const container = document.getElementById("book-detail-container");
+  const params = new URLSearchParams(window.location.search);
+  const bookId = params.get("id");
 
-  if (!id) {
-    area.innerHTML = "<p>No book specified</p>";
+  if (!bookId) {
+    container.innerHTML = "<p>Book not found. No ID provided.</p>";
     return;
   }
 
-  try {
-    const book = await getBookById(id);
-    const info = book.volumeInfo || {};
-    const thumb =
-      info.imageLinks?.thumbnail?.replace(/^http:/, "https:") ||
-      "../public/images/default-cover.jpg";
+  let book;
+  let isGutendex = false;
 
-    area.innerHTML = `
-      <div class="book-details">
-        <div class="detail-grid">
-          <img src="${thumb}" alt="${info.title || "No title"}" />
-          <div class="detail-meta">
-            <h2>${info.title || "No title"}</h2>
-            <p><strong>Authors:</strong> ${(info.authors || []).join(", ")}</p>
-            <p><strong>Publisher:</strong> ${info.publisher || "Unknown"}</p>
-            <p><strong>Published:</strong> ${info.publishedDate || "Unknown"}</p>
-            <p>${info.description || "No description available."}</p>
-            <div style="margin-top:1rem;">
-              <button id="fav-btn" class="btn">♥ Favorite</button>
-              <button id="order-btn" class="btn primary">Order (simulate)</button>
-            </div>
-          </div>
-        </div>
+  // Determine if ID is numeric → treat as Gutendex eBook
+  if (!isNaN(bookId)) {
+    book = await fetchGutendexBookById(bookId);
+    isGutendex = true;
+  } else {
+    book = await fetchBookById(bookId);
+  }
+
+  if (!book) {
+    container.innerHTML = "<p>Failed to load book details.</p>";
+    return;
+  }
+
+  // Prepare book details
+  const title = isGutendex ? book.title : book.volumeInfo.title;
+  const authors = isGutendex ? book.authors : book.volumeInfo.authors?.join(", ") || "Unknown";
+  const image = isGutendex ? book.image : book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/200x300";
+  const publisher = isGutendex ? "Public Domain" : book.volumeInfo.publisher || "Unknown";
+  const publishedDate = isGutendex ? "N/A" : book.volumeInfo.publishedDate || "Unknown";
+  const description = isGutendex ? `Subjects: ${book.subjects || "N/A"}` : book.volumeInfo.description || "No description available.";
+  const downloadLink = isGutendex ? book.download : null;
+
+  container.innerHTML = `
+    <div class="book-detail-card">
+      <img src="${image}" alt="${title}">
+      <div class="book-detail-info">
+        <h2>${title}</h2>
+        <p><strong>Author:</strong> ${authors}</p>
+        <p><strong>Publisher:</strong> ${publisher}</p>
+        <p><strong>Published Date:</strong> ${publishedDate}</p>
+        <p><strong>Description:</strong> ${description}</p>
+        ${downloadLink ? `<p><a href="${downloadLink}" target="_blank">📖 Download eBook</a></p>` : ""}
+        <button id="add-favorite">Add to Favorites ❤️</button>
+        <button id="add-cart">Add to Cart 🛒</button>
       </div>
-    `;
+    </div>
+  `;
 
-    const favBtn = document.getElementById("fav-btn");
-    favBtn.addEventListener("click", () => {
-      const added = toggleFavorite({
-        id: book.id,
-        volumeInfo: book.volumeInfo,
-      });
-      favBtn.textContent = added ? "♥ Favorited" : "♥ Favorite";
-    });
+  // Add to Favorites
+  document.getElementById("add-favorite").addEventListener("click", () => {
+    const favorites = getLocalStorage("favorites");
+    if (!favorites.some(f => f.id == book.id)) {
+      favorites.push({ id: book.id, title, author: authors, image });
+      setLocalStorage("favorites", favorites);
+      alert("Book added to favorites!");
+    } else alert("Book already in favorites.");
+  });
 
-    document.getElementById("order-btn").addEventListener("click", () => {
-      addToCart({ id: book.id, title: info.title, price: 9.99 });
-      alert("Order simulated. Check Order page (not implemented).");
-    });
-  } catch (e) {
-    console.error(e);
-    area.innerHTML = "<p>Failed to load book details.</p>";
-  }
-
-  try {
-    const quote = await fetchQuote();
-    const qarea = document.createElement("div");
-    qarea.innerHTML = quote
-      ? `<blockquote>"${quote.content}" — <strong>${quote.author}</strong></blockquote>`
-      : "";
-    area.prepend(qarea);
-  } catch {
-    // ignore quote loading errors
-  }
-}
-
-init();
+  // Add to Cart
+  document.getElementById("add-cart").addEventListener("click", () => {
+    const cart = getLocalStorage("cart");
+    const existing = cart.find(f => f.id == book.id);
+    if (existing) {
+      existing.quantity = (existing.quantity || 1) + 1;
+    } else {
+      cart.push({ id: book.id, title, author: authors, image, quantity: 1 });
+    }
+    setLocalStorage("cart", cart);
+    alert("Book added to cart!");
+  });
+});

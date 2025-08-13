@@ -1,28 +1,15 @@
-<div class="header-inner">
-  <div class="header-left">
-    <!-- From index.html, logo is in public/images/ -->
-    <a href="./index.html"
-      ><img class="logo" src="./public/images/logo.png" alt="BookHub logo"
-    /></a>
-    <div class="brand">
-      <strong>BOOKHUB</strong>
-    </div>
-  </div>
-
-  <nav class="nav" aria-label="Main navigation">
-    <a href="./index.html">Home</a>
-    <!-- Adjust relative path to book-details.html from index.html -->
-    <a href="./book_pages/book-details.html">Sample Book</a>
-    <a href="./index.html#categories">Categories</a>
-  </nav>
-
-  <form id="header-search" class="search-bar" role="search">
-    <input
-      id="header-search-input"
-      type="search"
-      placeholder="Search books..."
-      aria-label="Search books"
-    />
-    <button type="submit" class="btn">Search</button>
+<nav class="site-nav">
+  <a href="/index.html"><img src="/images/logo.png" alt="BookHub Logo" class="logo"></a>
+  
+  <form id="search-form" class="search-form">
+    <input type="text" id="search-input" placeholder="Search books..." required>
+    <button type="submit">Search</button>
   </form>
-</div>
+
+  <ul>
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/category/category.html">Categories</a></li>
+    <li><a href="/favorites/favorites.html">Favorites <span class="favorites-count">0</span></a></li>
+    <li><a href="/cart/cart.html">Cart 🛒 <span id="cart-count">0</span></a></li>
+  </ul>
+</nav>

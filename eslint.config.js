@@ -13,10 +13,12 @@ export default [
         location: "readonly",
         alert: "readonly",
         console: "readonly",
+        confirm: "readonly",  
         MutationObserver: "readonly",
         URLSearchParams: "readonly",
         fetch: "readonly",
         localStorage: "readonly",
+        Event: "readonly", // ✅ Add this
 
         // Node globals (for vite.config.js and config files)
         __dirname: "readonly",
