@@ -2,9 +2,10 @@ import { defineConfig } from "vite";
 import path from "path";
 
 export default defineConfig({
-  root: "./src", // Serve files from src/
+  base: "/WDD330--FINAL-PROJECT/", 
+  root: "./src", // still serve files from src during dev
   build: {
-    outDir: "../dist", // Output folder
+    outDir: "../dist", // output folder (at project root)
     emptyOutDir: true,
   },
   resolve: {
