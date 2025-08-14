@@ -1,10 +1,15 @@
-import { loadHeaderFooter, getLocalStorage,setLocalStorage, setupSearchHandler } from "./utils.mjs";
+import {
+  loadHeaderFooter,
+  getLocalStorage,
+  setLocalStorage,
+  setupSearchHandler,
+} from "./utils.mjs";
 import { searchBooks } from "./api.mjs";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHeaderFooter();
-    renderSearchResults();
-    setupSearchHandler
+  renderSearchResults();
+  setupSearchHandler;
 });
 
 async function renderSearchResults() {
@@ -28,11 +33,13 @@ async function renderSearchResults() {
     }
 
     container.innerHTML = books
-      .map(book => {
+      .map((book) => {
         const bookId = book.id;
         const title = book.volumeInfo.title || "No Title";
         const authors = book.volumeInfo.authors?.join(", ") || "Unknown";
-        const thumbnail = book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
+        const thumbnail =
+          book.volumeInfo.imageLinks?.thumbnail ||
+          "https://via.placeholder.com/128x195";
 
         return `
           <div class="book-card">
@@ -61,11 +68,11 @@ async function renderSearchResults() {
       .join("");
 
     // Add Favorites functionality
-    container.querySelectorAll(".add-favorite").forEach(btn => {
+    container.querySelectorAll(".add-favorite").forEach((btn) => {
       btn.addEventListener("click", () => {
         const favorites = getLocalStorage("favorites");
         const id = btn.dataset.id;
-        if (!favorites.some(f => f.id === id)) {
+        if (!favorites.some((f) => f.id === id)) {
           favorites.push({
             id,
             title: btn.dataset.title,
@@ -81,11 +88,11 @@ async function renderSearchResults() {
     });
 
     // Add to Cart functionality
-    container.querySelectorAll(".add-cart").forEach(btn => {
+    container.querySelectorAll(".add-cart").forEach((btn) => {
       btn.addEventListener("click", () => {
         const cart = getLocalStorage("cart");
         const id = btn.dataset.id;
-        const existing = cart.find(c => c.id === id);
+        const existing = cart.find((c) => c.id === id);
         if (existing) {
           existing.quantity = (existing.quantity || 1) + 1;
         } else {
@@ -101,7 +108,6 @@ async function renderSearchResults() {
         alert("Book added to cart!");
       });
     });
-
   } catch (err) {
     container.innerHTML = `<p>Error fetching results. Try again.</p>`;
     console.error(err);

@@ -133,14 +133,15 @@ async function renderGutendexSection(containerId, query) {
   if (!container) return;
 
   const books = await fetchGutendexBooks(query, 8);
-  console.log(books); 
+  console.log(books);
   if (!books || books.length === 0) {
     container.innerHTML = "<p>No free eBooks found.</p>";
     return;
   }
 
   container.innerHTML = books
-    .map(book => `
+    .map(
+      (book) => `
       <div class="book-card">
          <a href="/book_pages/book-details.html?id=${book.id}">
           <img src="${book.image}" alt="${book.title}">
@@ -155,15 +156,16 @@ async function renderGutendexSection(containerId, query) {
           ❤️ Add to Favorites
         </button>
       </div>
-    `)
+    `,
+    )
     .join("");
 
   // Add Favorites functionality
-  container.querySelectorAll(".add-favorite").forEach(btn => {
+  container.querySelectorAll(".add-favorite").forEach((btn) => {
     btn.addEventListener("click", () => {
       const favorites = getLocalStorage("favorites");
       const id = btn.dataset.id;
-      if (!favorites.some(f => f.id == id)) {
+      if (!favorites.some((f) => f.id == id)) {
         favorites.push({
           id,
           title: btn.dataset.title,

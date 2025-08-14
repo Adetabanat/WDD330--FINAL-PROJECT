@@ -1,4 +1,9 @@
-import { loadHeaderFooter, getLocalStorage, setLocalStorage, setupSearchHandler } from "./utils.mjs";
+import {
+  loadHeaderFooter,
+  getLocalStorage,
+  setLocalStorage,
+  setupSearchHandler,
+} from "./utils.mjs";
 import { fetchBookById } from "./api.mjs";
 import { fetchGutendexBookById } from "./api.mjs";
 
@@ -33,11 +38,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Prepare book details
   const title = isGutendex ? book.title : book.volumeInfo.title;
-  const authors = isGutendex ? book.authors : book.volumeInfo.authors?.join(", ") || "Unknown";
-  const image = isGutendex ? book.image : book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/200x300";
-  const publisher = isGutendex ? "Public Domain" : book.volumeInfo.publisher || "Unknown";
-  const publishedDate = isGutendex ? "N/A" : book.volumeInfo.publishedDate || "Unknown";
-  const description = isGutendex ? `Subjects: ${book.subjects || "N/A"}` : book.volumeInfo.description || "No description available.";
+  const authors = isGutendex
+    ? book.authors
+    : book.volumeInfo.authors?.join(", ") || "Unknown";
+  const image = isGutendex
+    ? book.image
+    : book.volumeInfo.imageLinks?.thumbnail ||
+      "https://via.placeholder.com/200x300";
+  const publisher = isGutendex
+    ? "Public Domain"
+    : book.volumeInfo.publisher || "Unknown";
+  const publishedDate = isGutendex
+    ? "N/A"
+    : book.volumeInfo.publishedDate || "Unknown";
+  const description = isGutendex
+    ? `Subjects: ${book.subjects || "N/A"}`
+    : book.volumeInfo.description || "No description available.";
   const downloadLink = isGutendex ? book.download : null;
 
   container.innerHTML = `
@@ -59,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Add to Favorites
   document.getElementById("add-favorite").addEventListener("click", () => {
     const favorites = getLocalStorage("favorites");
-    if (!favorites.some(f => f.id == book.id)) {
+    if (!favorites.some((f) => f.id == book.id)) {
       favorites.push({ id: book.id, title, author: authors, image });
       setLocalStorage("favorites", favorites);
       alert("Book added to favorites!");
@@ -69,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Add to Cart
   document.getElementById("add-cart").addEventListener("click", () => {
     const cart = getLocalStorage("cart");
-    const existing = cart.find(f => f.id == book.id);
+    const existing = cart.find((f) => f.id == book.id);
     if (existing) {
       existing.quantity = (existing.quantity || 1) + 1;
     } else {

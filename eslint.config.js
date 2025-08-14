@@ -13,7 +13,7 @@ export default [
         location: "readonly",
         alert: "readonly",
         console: "readonly",
-        confirm: "readonly",  
+        confirm: "readonly",
         MutationObserver: "readonly",
         URLSearchParams: "readonly",
         fetch: "readonly",

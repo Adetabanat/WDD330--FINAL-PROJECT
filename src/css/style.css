@@ -3,7 +3,7 @@
 --------------------------- */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f5f5f5;
   color: #333;
 }
@@ -18,7 +18,6 @@ main {
   min-height: 70vh; /* ensures footer at bottom */
 }
 
-
 /* ====== HEADER ====== */
 header {
   background-color: #222;
@@ -32,7 +31,6 @@ header {
   max-width: 1200px;
   margin: 0 auto;
 }
-
 
 header .logo {
   height: 50px;
@@ -67,12 +65,9 @@ header nav a {
   font-size: 0.8rem;
 }
 
-
-
-
 /* --------------------------
    Book Card Styles */
-  .book-grid {
+.book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 15px;
@@ -84,7 +79,7 @@ header nav a {
   padding: 10px;
   border-radius: 5px;
   text-align: center;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 .book-card img {
@@ -111,7 +106,7 @@ header nav a {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   margin: 20px 0;
 }
 
@@ -188,7 +183,6 @@ header nav a {
   font-size: 0.85rem;
 }
 
-
 .book-card button.remove-cart {
   margin-top: 8px;
   padding: 5px 8px;
@@ -257,7 +251,6 @@ header nav a {
   background-color: #555;
 }
 
-
 /* Animation keyframes */
 @keyframes scrollQuote {
   0% {
@@ -289,7 +282,6 @@ header nav a {
   background-color: #555;
 }
 
-
 /* --------------------------
    Footer Styles
 --------------------------- */
@@ -305,6 +297,137 @@ footer {
   margin: 0;
   font-size: 14px;
 }
+.footer-container a {
+  color: #ff6b81;
+  text-decoration: none;
+}
 
-/* --------------------------
-   Respons
+/* ===========================
+   Responsive Styles
+=========================== */
+@media (max-width: 900px) {
+  .header-container {
+    max-width: 98vw;
+    padding: 0 10px;
+  }
+  main {
+    padding: 10px;
+  }
+  .book-detail-card {
+    flex-direction: column;
+    align-items: center;
+  }
+  .book-detail-card img {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 700px) {
+  header nav ul {
+    gap: 0.5rem;
+  }
+  .book-grid,
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .book-card img {
+    height: 150px;
+  }
+  .book-detail-card img {
+    width: 150px;
+    height: 220px;
+  }
+  .search-form input {
+    width: 110px;
+  }
+}
+
+/* ...existing code... */
+
+/* ===========================
+   Responsive Styles
+=========================== */
+@media (max-width: 900px) {
+  .header-container {
+    max-width: 98vw;
+    padding: 0 10px;
+  }
+  main {
+    padding: 10px;
+  }
+  .book-detail-card {
+    flex-direction: column;
+    align-items: center;
+  }
+  .book-detail-card img {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 700px) {
+  header nav ul {
+    gap: 0.5rem;
+  }
+  .book-grid,
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .book-card img {
+    height: 150px;
+  }
+  .book-detail-card img {
+    width: 150px;
+    height: 220px;
+  }
+  .search-form input {
+    width: 110px;
+  }
+}
+
+@media (max-width: 500px) {
+  .header-container,
+  header nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0.5rem;
+  }
+  header nav ul {
+    flex-direction: column;
+    gap: 0.2rem;
+    width: 100%;
+    padding: 0;
+  }
+  .search-form {
+    width: 100%;
+    margin: 0 0 10px 0;
+  }
+  .book-grid,
+  .books-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .book-card img {
+    height: 120px;
+  }
+  .book-detail-info {
+    min-width: 0;
+  }
+  .quote-marquee {
+    font-size: 0.95rem;
+    padding: 6px 0;
+  }
+  .category-btn {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+  }
+  footer {
+    font-size: 0.95rem;
+    padding: 10px 0;
+  }
+}
+
+/* ...existing code... */

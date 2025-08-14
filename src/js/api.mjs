@@ -38,10 +38,12 @@ export async function fetchRandomQuote() {
     return await res.json();
   } catch (err) {
     console.error("Quote API Error:", err);
-    return { content: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" };
+    return {
+      content: "Be yourself; everyone else is already taken.",
+      author: "Oscar Wilde",
+    };
   }
 }
-
 
 // Fetch books from Gutendex API
 export async function fetchGutendexBooks(query = "", limit = 5) {
@@ -52,18 +54,18 @@ export async function fetchGutendexBooks(query = "", limit = 5) {
     const data = await res.json();
 
     // Limit the number of books returned
-    return data.results.slice(0, limit).map(book => ({
+    return data.results.slice(0, limit).map((book) => ({
       id: book.id,
       title: book.title,
-      authors: book.authors.map(a => a.name).join(", ") || "Unknown",
-      image: book.formats["image/jpeg"] || "https://via.placeholder.com/128x195",
+      authors: book.authors.map((a) => a.name).join(", ") || "Unknown",
+      image:
+        book.formats["image/jpeg"] || "https://via.placeholder.com/128x195",
     }));
   } catch (err) {
     console.error("Gutendex API Error:", err);
     return [];
   }
 }
-
 
 // Fetch a single Gutendex book by ID
 export async function fetchGutendexBookById(id) {
@@ -76,9 +78,13 @@ export async function fetchGutendexBookById(id) {
     return {
       id: book.id,
       title: book.title,
-      authors: book.authors.map(a => a.name).join(", ") || "Unknown",
-      image: book.formats["image/jpeg"] || "https://via.placeholder.com/128x195",
-      download: book.formats["text/plain; charset=utf-8"] || book.formats["application/epub+zip"] || null,
+      authors: book.authors.map((a) => a.name).join(", ") || "Unknown",
+      image:
+        book.formats["image/jpeg"] || "https://via.placeholder.com/128x195",
+      download:
+        book.formats["text/plain; charset=utf-8"] ||
+        book.formats["application/epub+zip"] ||
+        null,
       subjects: book.subjects.join(", "),
     };
   } catch (err) {

@@ -1,9 +1,14 @@
-import { loadHeaderFooter, getLocalStorage, setLocalStorage, setupSearchHandler } from "./utils.mjs";
+import {
+  loadHeaderFooter,
+  getLocalStorage,
+  setLocalStorage,
+  setupSearchHandler,
+} from "./utils.mjs";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHeaderFooter();
-    renderCart();
-    setupSearchHandler();
+  renderCart();
+  setupSearchHandler();
 });
 
 // Render cart items with quantity
@@ -18,7 +23,7 @@ function renderCart() {
   }
 
   container.innerHTML = cart
-    .map(book => {
+    .map((book) => {
       const title = book.title || "No Title";
       const author = book.author || "Unknown";
       const thumbnail = book.image || "https://via.placeholder.com/128x195";
@@ -43,10 +48,10 @@ function renderCart() {
     .join("");
 
   // Add remove functionality
-  container.querySelectorAll(".remove-cart").forEach(btn => {
+  container.querySelectorAll(".remove-cart").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
-      const updatedCart = cart.filter(c => c.id !== id);
+      const updatedCart = cart.filter((c) => c.id !== id);
       setLocalStorage("cart", updatedCart);
       renderCart();
       updateCartCount();
@@ -54,26 +59,27 @@ function renderCart() {
   });
 
   // Increase quantity
-  container.querySelectorAll(".increase-qty").forEach(btn => {
+  container.querySelectorAll(".increase-qty").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
-      const updatedCart = cart.map(item => {
+      const updatedCart = cart.map((item) => {
         if (item.id === id) item.quantity = (item.quantity || 1) + 1;
         return item;
       });
       setLocalStorage("cart", updatedCart);
       renderCart();
-        updateCartCount();
-        setupSearchHandler();
+      updateCartCount();
+      setupSearchHandler();
     });
   });
 
   // Decrease quantity
-  container.querySelectorAll(".decrease-qty").forEach(btn => {
+  container.querySelectorAll(".decrease-qty").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
-      const updatedCart = cart.map(item => {
-        if (item.id === id) item.quantity = Math.max((item.quantity || 1) - 1, 1);
+      const updatedCart = cart.map((item) => {
+        if (item.id === id)
+          item.quantity = Math.max((item.quantity || 1) - 1, 1);
         return item;
       });
       setLocalStorage("cart", updatedCart);

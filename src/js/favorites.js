@@ -1,9 +1,14 @@
-import { loadHeaderFooter, getLocalStorage, setLocalStorage, setupSearchHandler } from "./utils.mjs";
+import {
+  loadHeaderFooter,
+  getLocalStorage,
+  setLocalStorage,
+  setupSearchHandler,
+} from "./utils.mjs";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHeaderFooter();
-    renderFavorites();
-    setupSearchHandler();
+  renderFavorites();
+  setupSearchHandler();
 });
 
 // Render favorite books
@@ -17,7 +22,7 @@ function renderFavorites() {
   }
 
   container.innerHTML = favorites
-    .map(book => {
+    .map((book) => {
       const title = book.title || "No Title";
       const author = book.author || "Unknown";
       const thumbnail = book.image || "https://via.placeholder.com/128x195";
@@ -36,10 +41,10 @@ function renderFavorites() {
     .join("");
 
   // Add click events to remove buttons
-  container.querySelectorAll(".remove-favorite").forEach(btn => {
+  container.querySelectorAll(".remove-favorite").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
-      const updatedFavorites = favorites.filter(f => f.id !== id);
+      const updatedFavorites = favorites.filter((f) => f.id !== id);
       setLocalStorage("favorites", updatedFavorites);
       renderFavorites(); // re-render after removal
       updateHeaderCount();

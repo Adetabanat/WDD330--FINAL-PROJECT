@@ -1,4 +1,4 @@
-import { loadHeaderFooter, getLocalStorage,setupSearchHandler } from "./utils.mjs";
+import { loadHeaderFooter, setupSearchHandler } from "./utils.mjs";
 import { searchBooks } from "./api.mjs";
 
 const categories = [
@@ -15,21 +15,25 @@ const categories = [
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHeaderFooter();
-    renderCategories();
-    setupSearchHandler();
+  renderCategories();
+  setupSearchHandler();
 });
 
 // Render category buttons
 function renderCategories() {
   const container = document.getElementById("category-list");
   container.innerHTML = categories
-    .map(cat => `<button class="category-btn" data-category="${cat}">${cat}</button>`)
+    .map(
+      (cat) =>
+        `<button class="category-btn" data-category="${cat}">${cat}</button>`,
+    )
     .join("");
 
-  container.querySelectorAll(".category-btn").forEach(btn => {
+  container.querySelectorAll(".category-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const category = btn.dataset.category;
-      document.getElementById("category-title").textContent = `Books in "${category}"`;
+      document.getElementById("category-title").textContent =
+        `Books in "${category}"`;
       await renderBooksByCategory(category);
     });
   });
@@ -46,11 +50,13 @@ async function renderBooksByCategory(category) {
   }
 
   container.innerHTML = books
-    .map(book => {
+    .map((book) => {
       const bookId = book.id;
       const title = book.volumeInfo.title || "No Title";
       const authors = book.volumeInfo.authors?.join(", ") || "Unknown";
-      const thumbnail = book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
+      const thumbnail =
+        book.volumeInfo.imageLinks?.thumbnail ||
+        "https://via.placeholder.com/128x195";
 
       return `
         <div class="book-card">
